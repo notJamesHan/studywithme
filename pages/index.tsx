@@ -2,6 +2,14 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 
+// import Swiper core and required modules
+import { Navigation } from "swiper";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
 import Layout from "@/components/Layout";
 
 interface HomeProps {
@@ -27,46 +35,79 @@ export default function Home({ popularVideos }: HomeProps) {
   //     regionCode: "us",
   //     type: ["video"],
   //   })
-  console.log(popularVideos);
+
   return (
     <Layout hasTabBar>
       <Head>
         <title>StudyWithMe</title>
       </Head>
-      <div>
-        <h2>Popular</h2>
-        <div className="flex flex-row">
+      <div className="p-4">
+        <h2 className="text-2xl font-bold">📈 Popular</h2>
+        <Swiper
+          modules={[Navigation]}
+          navigation={{
+            nextEl: ".swiper-button-right",
+            prevEl: ".swiper-button-left",
+          }}
+          onSwiper={(swiper) => console.log(swiper)}
+          onSlideChange={() => console.log("slide change")}
+          breakpoints={{
+            // when window width is >= 320px
+            320: {
+              slidesPerView: 2,
+              spaceBetween: 10,
+            },
+            // when window width is >= 480px
+            480: {
+              slidesPerView: 3,
+              spaceBetween: 10,
+            },
+            // when window width is >= 640px
+            640: {
+              slidesPerView: 4,
+              spaceBetween: 10,
+            },
+          }}
+        >
+          <button className="swiper-button-left">Left</button>
+          <button className="swiper-button-right">Right</button>
           {popularVideos?.items.map((video: any) => (
-            <Link
-              key={video.id}
-              href={`https://www.youtube.com/watch?v=${video.id}`}
-              target="_blank"
-            >
-              <div className="block px-4 py-4 w-72 shadow-md rounded-md">
-                <div className="relative rounded-md bg-slate-300 aspect-video">
-                  <Image
-                    fill
-                    sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw, 33vw"
-                    src={video.snippet.thumbnails.standard.url}
-                    alt={`${video.snippet.channelTitle}'s thumbnail`}
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 className="block text-base mt-2 font-medium text-gray-900 max-h-16 text-ellipsis line-clamp-2">
-                    {video.snippet.title}
-                  </h3>
+            <SwiperSlide key={video.id}>
+              <Link
+                href={`https://www.youtube.com/watch?v=${video.id}`}
+                target="_blank"
+              >
+                <div className="rounded-md p-2 bg-gray-400">
+                  <div className="relative bg-slate-300 rounded-md aspect-video hover:scale-105 transition-transform">
+                    <div className="text-xs z-10  flex items-center justify-center text-center absolute px-1.5 py-1.5 leading-5 bg-black rounded-md text-white bg-opacity-80 bottom-0 left-0 pointer-events-none m-2">
+                      {/* <span className="mr-1 indent-0">🔴</span> */}
+                      <span className="leading-3">
+                        {video.liveStreamingDetails.concurrentViewers} Viewers
+                      </span>
+                    </div>
+                    <Image
+                      fill
+                      sizes="100vw"
+                      src={video.snippet.thumbnails.standard.url}
+                      alt={`${video.snippet.channelTitle}'s thumbnail`}
+                      className="object-cover rounded-md"
+                    />
+                  </div>
                   <div>
-                    <p className="text-sm">{video.snippet.channelTitle}</p>
-                    <p className="text-sm">
-                      {video.liveStreamingDetails.concurrentViewers} Watching
-                    </p>
+                    <h3 className="text-sm mt-2 font-medium text-gray-900 max-h-16 text-ellipsis line-clamp-1 ">
+                      {video.snippet.title}
+                    </h3>
+                    <div>
+                      <p className="text-xs text-ellipsis line-clamp-1 ">
+                        {video.snippet.channelTitle}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
     </Layout>
   );
@@ -90,7 +131,7 @@ export async function getServerSideProps() {
   }
 
   const popularSearchRequest = await fetch(
-    `${YOUTUBE_PLAYLIST_ITEMS_API}?part=id&eventType=live&maxResults=4&q=study%20with%20me&order=viewCount&type=video&key=${process.env.YOUTUBE_API_KEY}`
+    `${YOUTUBE_PLAYLIST_ITEMS_API}?part=id&eventType=live&maxResults=12&q=study%20with%20me&order=viewCount&type=video&key=${process.env.YOUTUBE_API_KEY}`
   );
   const popularSearchData = await popularSearchRequest.json();
   popularSearchData.items.forEach((element: SearchProps) => {
