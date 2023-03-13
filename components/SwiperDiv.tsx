@@ -27,10 +27,12 @@ export default function SwiperDiv({
     <div className="block px-7 max-w-7xl mx-auto my-0">
       <div className="flex justify-between items-center py-6">
         <div>
-          <h2 className="text-2xl font-bold">{title}</h2>
+          <Link href="/explore">
+            <h2 className="text-2xl font-bold">{title}</h2>
+          </Link>
           <p>{description}</p>
         </div>
-        <div>
+        <div className="flex flex-nowrap">
           <button id={`${id}-prev`} className="custom-swiper-button-prev mr-3">
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>

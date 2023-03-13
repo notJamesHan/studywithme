@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import Head from "next/head";
 
 import Layout from "@/components/Layout";
@@ -20,32 +19,43 @@ interface SearchProps {
 }
 
 export default function Home({ popularVideos, newestVideos }: HomeProps) {
+  console.log(popularVideos);
   return (
-    <Layout hasTabBar>
+    <Layout hasTabBar hasFooter>
       <Head>
         <title>Study With Me</title>
       </Head>
       <div className="my-16">
-        <h1 className="text-center">Find your Study streamer.</h1>
+        <h1 className="text-center mb-10 font-medium text-2xl">
+          Find your Study Streamer.
+        </h1>
 
-        <div className="relative bg-slate-300 rounded-md aspect-video transition-transform w-72">
-          <div className="inline-block align-middle absolute text-xs z-10 text-center px-1.5 py-0.5 bg-black rounded-md text-white bg-opacity-80 bottom-0 left-0 pointer-events-none m-2">
-            {/* <span className="mr-1 indent-0">🔴</span> */}
-            <span className="leading-3">
-              {popularVideos.items[0].liveStreamingDetails.concurrentViewers !==
-              undefined
-                ? `${popularVideos.items[0].liveStreamingDetails.concurrentViewers} `
-                : "0 "}
-              Viewers
-            </span>
+        <div className="flex flex-row justify-center">
+          <div className="relative overflow-hidden w-full aspect-video mr-6 max-w-lg">
+            <iframe
+              className="absolute top-0 left-0 bottom-0 right-0 w-full h-full rounded-md"
+              src={`https://www.youtube.com/embed/${popularVideos.items[0].id}?&autoplay=1&mute=1`}
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
-          <Image
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            src={popularVideos.items[0].snippet.thumbnails.high.url}
-            alt={`${popularVideos.items[0].snippet.channelTitle}'s thumbnail`}
-            className="object-cover rounded-md"
-          />
+          <div className="relative bg-slate-300 rounded-md w-72 p-3">
+            <h1 className="text-xl font-semibold">Featured Stream</h1>
+            <Link
+              href={`https://www.youtube.com/watch?v=${popularVideos.items[0].id}`}
+              target="_blank"
+            >
+              <h3 className="mt-2 underline font-semibold">
+                {popularVideos.items[0].snippet.channelTitle}
+              </h3>
+            </Link>
+            <h5 className="text-sm">{popularVideos.items[0].snippet.title}</h5>
+            <p className="mt-2 text-sm">
+              Watch study stream to learn more about something like is water
+              wet?
+            </p>
+          </div>
         </div>
       </div>
 
