@@ -19,7 +19,7 @@ interface SearchProps {
 }
 
 export default function Home({ popularVideos, newestVideos }: HomeProps) {
-  console.log(popularVideos);
+  // console.log(popularVideos);
   return (
     <Layout hasTabBar hasFooter>
       <Head>
@@ -85,15 +85,6 @@ const YOUTUBE_VIDEO_ITEMS_API =
   "https://youtube.googleapis.com/youtube/v3/videos";
 
 export async function getServerSideProps() {
-  // yt.search
-  //   .list({
-  //     part: ["snippet"],
-  //     eventType: "live",
-  //     q: "study with me",
-  //     regionCode: "us",
-  //     type: ["video"],
-  //   })
-
   let videoIds: string[] = [];
 
   // Gets Video data from youtube V3 API (Statistics, Snippet)
@@ -109,22 +100,26 @@ export async function getServerSideProps() {
     `${YOUTUBE_PLAYLIST_ITEMS_API}?part=id&eventType=live&maxResults=12&q=study%20with%20me&order=viewCount&type=video&key=${process.env.YOUTUBE_API_KEY}`
   );
   const popularSearchData = await popularSearchRequest.json();
-  popularSearchData.items.forEach((element: SearchProps) => {
-    videoIds.push(element.id.videoId);
-  });
 
-  let popularVideos = await getVideos(videoIds);
-  videoIds = [];
+  if (popularSearchData.ok) {
+    popularSearchData.items.forEach((element: SearchProps) => {
+      videoIds.push(element.id.videoId);
+    });
+    var popularVideos = await getVideos(videoIds);
+    videoIds = [];
+  }
 
   const newsetSearchRequest = await fetch(
     `${YOUTUBE_PLAYLIST_ITEMS_API}?part=id&eventType=live&maxResults=12&q=study%20with%20me&order=date&type=video&key=${process.env.YOUTUBE_API_KEY}`
   );
   const newsetSearchData = await newsetSearchRequest.json();
-  newsetSearchData.items.forEach((element: SearchProps) => {
-    videoIds.push(element.id.videoId);
-  });
 
-  let newestVideos = await getVideos(videoIds);
+  if (popularSearchData.ok) {
+    newsetSearchData.items.forEach((element: SearchProps) => {
+      videoIds.push(element.id.videoId);
+    });
+    var newestVideos = await getVideos(videoIds);
+  }
 
   return {
     props: {

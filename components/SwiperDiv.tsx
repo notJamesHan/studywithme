@@ -27,9 +27,7 @@ export default function SwiperDiv({
     <div className="block px-7 max-w-7xl mx-auto my-0">
       <div className="flex justify-between items-center py-6">
         <div>
-          <Link href="/explore">
-            <h2 className="text-2xl font-bold">{title}</h2>
-          </Link>
+          <h2 className="text-2xl font-bold">{title}</h2>
           <p>{description}</p>
         </div>
         <div className="flex flex-nowrap">

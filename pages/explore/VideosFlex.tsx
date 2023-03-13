@@ -2,13 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface VideosFlexProps {
-  data: any;
+  videosData: any;
 }
 
-export default function VideosFlex({ data }: VideosFlexProps) {
+export default function VideosFlex({ videosData }: VideosFlexProps) {
   return (
     <div>
-      {data?.items.map((video: any) => (
+      {videosData?.items.map((video: any) => (
         <Link
           href={`https://www.youtube.com/watch?v=${video.id}`}
           target="_blank"
